@@ -1,13 +1,38 @@
+const int greenLedPins[] = {
+  2, 3, 4};
+const int nbGreenLeds = 3;
+const int yellowLedPins[] = {
+  5, 6};
+const int nbYellowLeds = 2;
+const int redLedPins[] = {
+  7, 8, 9};
+const int nbRedLeds = 3;
+
 const int BLINKING_TIME = 175;
+
+const int nbAllLeds = nbGreenLeds + nbYellowLeds + nbRedLeds;
+int allLedPins[nbAllLeds];
 
 boolean blinking = false;
 int lastblinkingcolor = 2;
 int direction = 1;
 
+
 void initLedPins() {
-  for (int thisPin = 2; thisPin < 10; thisPin++) {
-    pinMode(thisPin, OUTPUT);
-  } 
+
+  for(int i = 0; i < nbGreenLeds; i++) {
+    allLedPins[i] = greenLedPins[i];
+  }
+  for(int i = 0; i < nbYellowLeds; i++) {
+    allLedPins[i + nbGreenLeds] = yellowLedPins[i];
+  }
+  for(int i = 0; i < nbRedLeds; i++) {
+    allLedPins[i + nbGreenLeds + nbYellowLeds] = redLedPins[i];
+  }
+
+  for (int i=0; i < nbAllLeds; i++) {
+    pinMode(allLedPins[i], OUTPUT);
+  }  
 }
 
 void setup() {
@@ -17,29 +42,43 @@ void setup() {
 }
 
 void alllightoff() {
-  for (int thisPin = 2; thisPin < 10; thisPin++) {
-    digitalWrite(thisPin, LOW);
-  }
+  for (int i=0; i < nbAllLeds; i++) {
+    operateLeds(allLedPins, nbAllLeds, LOW);
+  }  
+}
+
+void operateLed(const int ledPin, int status) {
+  digitalWrite(ledPin, status);
+}
+
+void operateLeds(const int ledPins[], const int nbLeds, int status) {
+  for (int i=0; i < nbLeds; i++) {
+    operateLed(ledPins[i], status);
+  }  
+}
+
+void lightOnLeds(const int ledPins[], const int nbLeds) {
+  operateLeds(ledPins, nbLeds, HIGH);
+}
+
+void lightOffLeds(const int ledPins[], const int nbLeds) {
+  operateLeds(ledPins, nbLeds, LOW);
 }
 
 void lighton(int color) {
   switch (color) {
+
   case 'G':    
     alllightoff();
-    digitalWrite(2, HIGH);
-    digitalWrite(3, HIGH);
-    digitalWrite(4, HIGH);
+    lightOnLeds(greenLedPins, nbGreenLeds);
     break;
   case 'Y':    
     alllightoff();
-    digitalWrite(5, HIGH);
-    digitalWrite(6, HIGH);      
+    lightOnLeds(yellowLedPins, nbYellowLeds);
     break;
   case 'R':    
     alllightoff();
-    digitalWrite(7, HIGH);
-    digitalWrite(8, HIGH);
-    digitalWrite(9, HIGH);      
+    lightOnLeds(redLedPins, nbRedLeds);
     break;
   case 'B' :
     blinking = true;
@@ -47,19 +86,17 @@ void lighton(int color) {
     break;
   default:
     alllightoff();
-
   }
-
 }
 
 void blink() {
   int next;
 
-  if ((direction == 1) && (lastblinkingcolor == 9)) {
+  if ((direction == 1) && (lastblinkingcolor == nbAllLeds - 1)) {
     direction = -1;
   } 
 
-  if ((direction == -1) && (lastblinkingcolor == 2)) {
+  if ((direction == -1) && (lastblinkingcolor == 0)) {
     direction = 1;
   } 
 
@@ -67,10 +104,9 @@ void blink() {
 
   alllightoff();
 
-  digitalWrite(next, HIGH);
+  operateLed(allLedPins[next], HIGH);
   delay(BLINKING_TIME);  
   lastblinkingcolor = next;
-
 }
 
 void loop() {
@@ -86,5 +122,6 @@ void loop() {
     }
   }
 }
+
 
 
