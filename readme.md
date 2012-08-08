@@ -24,9 +24,9 @@ The skectch understand these commands :
 
 Schema
 ------
-A schema of the prototyping board can be found in _schema_ directory
+A schema of the prototyping board can be found in _schema_ directory in [Fritzing](http://fritzing.org) format
 
-!(https://github.com/avernois/ardFeedback/raw/master/img/ardfeedback_bb.png "ArdFeedback schema")
+![Scheme](https://github.com/avernois/ardFeedback/raw/master/img/ardfeedback_bb.png "ArdFeedback scheme")
 
 
 
