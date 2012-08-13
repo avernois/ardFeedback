@@ -16,10 +16,10 @@ Serial Commands
 Commands are receive from serial port. They are a single char.
 
 The skectch understand these commands :
-* R : light on red led only
-* Y : light on yellow led only
-* G : light on green led only
-* B : blink. Well, it's more like a wave. All Leds are light on sequentially.
+* 'R' or 'F' : light on failure led only (usually red)
+* 'Y' or 'U' : light on unstable leds only (usually yellow)
+* 'G' or 'S' : light on success leds only (usually green (or blue))
+* 'B' : blink. Well, it's more like a wave. All Leds are light on sequentially.
 
 
 Schema
