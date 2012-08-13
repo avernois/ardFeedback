@@ -1,16 +1,13 @@
-const int greenLedPins[] = {
-  2, 3, 4};
-const int nbGreenLeds = 3;
-const int yellowLedPins[] = {
-  5, 6};
-const int nbYellowLeds = 2;
-const int redLedPins[] = {
-  7, 8, 9};
-const int nbRedLeds = 3;
+const int successLedPins[] = {2, 3, 4};
+const int nbSuccessLeds = 3;
+const int unstableLedPins[] = {5, 6};
+const int nbUnstableLeds = 2;
+const int failedLedPins[] = {7, 8, 9};
+const int nbFailedLeds = 3;
 
 const int BLINKING_TIME = 175;
 
-const int nbAllLeds = nbGreenLeds + nbYellowLeds + nbRedLeds;
+const int nbAllLeds = nbSuccessLeds + nbUnstableLeds + nbFailedLeds;
 int allLedPins[nbAllLeds];
 
 boolean blinking = false;
@@ -20,14 +17,14 @@ int direction = 1;
 
 void initLedPins() {
 
-  for(int i = 0; i < nbGreenLeds; i++) {
-    allLedPins[i] = greenLedPins[i];
+  for(int i = 0; i < nbSuccessLeds; i++) {
+    allLedPins[i] = successLedPins[i];
   }
-  for(int i = 0; i < nbYellowLeds; i++) {
-    allLedPins[i + nbGreenLeds] = yellowLedPins[i];
+  for(int i = 0; i < nbUnstableLeds; i++) {
+    allLedPins[i + nbSuccessLeds] = unstableLedPins[i];
   }
-  for(int i = 0; i < nbRedLeds; i++) {
-    allLedPins[i + nbGreenLeds + nbYellowLeds] = redLedPins[i];
+  for(int i = 0; i < nbFailedLeds; i++) {
+    allLedPins[i + nbSuccessLeds + nbUnstableLeds] = failedLedPins[i];
   }
 
   for (int i=0; i < nbAllLeds; i++) {
@@ -68,17 +65,20 @@ void lightOffLeds(const int ledPins[], const int nbLeds) {
 void lighton(int color) {
   switch (color) {
 
-  case 'G':    
+  case 'G':
+  case 'S':    
     alllightoff();
-    lightOnLeds(greenLedPins, nbGreenLeds);
+    lightOnLeds(successLedPins, nbSuccessLeds);
     break;
-  case 'Y':    
+  case 'Y':
+  case 'U':    
     alllightoff();
-    lightOnLeds(yellowLedPins, nbYellowLeds);
+    lightOnLeds(unstableLedPins, nbUnstableLeds);
     break;
-  case 'R':    
+  case 'R':
+  case 'F':    
     alllightoff();
-    lightOnLeds(redLedPins, nbRedLeds);
+    lightOnLeds(failedLedPins, nbFailedLeds);
     break;
   case 'B' :
     blinking = true;
@@ -122,6 +122,3 @@ void loop() {
     }
   }
 }
-
-
-
