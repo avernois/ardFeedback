@@ -48,22 +48,18 @@ void alllightoff() {
   }  
 }
 
-void operateLed(const int ledPin, int status) {
-  digitalWrite(ledPin, status);
+void operateLed(const int ledPin, int level) {
+  digitalWrite(ledPin, level);
 }
 
-void operateLeds(const int ledPins[], const int nbLeds, int status) {
+void operateLeds(const int ledPins[], const int nbLeds, int level) {
   for (int i=0; i < nbLeds; i++) {
-    operateLed(ledPins[i], status);
+    operateLed(ledPins[i], level);
   }  
 }
 
 void lightOnLeds(const int status) {
   operateLeds(pins[status], nbLeds[status], HIGH);
-}
-
-void lightOffLeds(const int ledPins[], const int nbLeds) {
-  operateLeds(ledPins, nbLeds, LOW);
 }
 
 void startBlinking() {
