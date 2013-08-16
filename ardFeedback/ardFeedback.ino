@@ -14,7 +14,6 @@ boolean blinking = false;
 int lastblinkingcolor = 2;
 int direction = 1;
 
-
 void initLedPins() {
 
   for(int i = 0; i < nbSuccessLeds; i++) {
@@ -66,7 +65,7 @@ void lighton(int color) {
   switch (color) {
 
   case 'G':
-  case 'S':    
+  case 'S':
     alllightoff();
     lightOnLeds(successLedPins, nbSuccessLeds);
     break;
@@ -82,14 +81,14 @@ void lighton(int color) {
     break;
   case 'B' :
     blinking = true;
-    blink();
+    blink_all();
     break;
   default:
     alllightoff();
   }
 }
 
-void blink() {
+void blink_all() {
   int next;
 
   if ((direction == 1) && (lastblinkingcolor == nbAllLeds - 1)) {
@@ -118,7 +117,7 @@ void loop() {
   } 
   else {
     if (blinking) {
-      blink();
+      blink_all();
     }
   }
 }
