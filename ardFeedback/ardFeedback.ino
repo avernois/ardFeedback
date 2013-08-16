@@ -42,7 +42,7 @@ void setup() {
   stopBlinking();
 }
 
-void alllightoff() {
+void lightOffAllLeds() {
   for (int i=0; i < nbAllLeds; i++) {
     operateLeds(allLedPins, nbAllLeds, LOW);
   }  
@@ -62,57 +62,26 @@ void lightOnLeds(const int status) {
   operateLeds(pins[status], nbLeds[status], HIGH);
 }
 
-void startBlinking() {
+void updateLeds(const int status) {
+    stopBlinking();
+    lightOffAllLeds();
+    lightOnLeds(status);
+}
+
+void startBlinking(const int status) {
   blinking = true;
+  blink(status);
 }
 
 void stopBlinking() {
   blinking = false;
 }
 
-void lighton(int color) {
-  switch (color) {
-
-  case 'G':
-  case 'S':
-    stopBlinking();
-    currentStatus = SUCCESS;
-    alllightoff();
-    lightOnLeds(SUCCESS);
-    break;
-  case 'Y':
-  case 'U':
-    stopBlinking();
-    currentStatus = UNSTABLE;
-    alllightoff();
-    lightOnLeds(UNSTABLE);
-    break;
-  case 'R':
-  case 'F':
-    stopBlinking();
-    currentStatus = FAILED;
-    alllightoff();
-    lightOnLeds(FAILED);
-    break;
-  case 'C' :
-    startBlinking();
-    blink(currentStatus);
-    break;
-  case 'B' :
-    startBlinking();
-    currentStatus = ALL;
-    blink(ALL);
-    break;
-  default:
-    alllightoff();
-  }
-}
-
 void blink(const int status) {
    if (status == ALL) {
      blink_all();
    } else {
-     alllightoff();
+     lightOffAllLeds();
      delay(BLINKING_TIME*2);
      lightOnLeds(status);
      delay(BLINKING_TIME*2);
@@ -132,19 +101,48 @@ void blink_all() {
 
   next = lastblinkingcolor + direction;
 
-  alllightoff();
+  lightOffAllLeds();
 
   operateLed(allLedPins[next], HIGH);
   delay(BLINKING_TIME);  
   lastblinkingcolor = next;
 }
 
+void lightOn(int color) {
+  switch (color) {
+
+  case 'G':
+  case 'S':
+    currentStatus = SUCCESS;
+    updateLeds(currentStatus);
+    break;
+  case 'Y':
+  case 'U':
+    currentStatus = UNSTABLE;
+    updateLeds(currentStatus);
+    break;
+  case 'R':
+  case 'F':
+    currentStatus = FAILED;
+    updateLeds(currentStatus);
+    break;
+  case 'B' :
+    currentStatus = ALL;
+    startBlinking(currentStatus);
+    break;
+  case 'C' :
+    startBlinking(currentStatus);
+    break;
+  default:
+    lightOffAllLeds();
+  }
+}
+
 void loop() {
 
   if (Serial.available() > 0) {
-    blinking = false;
     int inByte = Serial.read();
-    lighton(inByte);
+    lightOn(inByte);
   } 
   else {
     if (blinking) {
