@@ -58,8 +58,8 @@ void operateLeds(const int ledPins[], const int nbLeds, int status) {
   }  
 }
 
-void lightOnLeds(const int ledPins[], const int nbLeds) {
-  operateLeds(ledPins, nbLeds, HIGH);
+void lightOnLeds(const int status) {
+  operateLeds(pins[status], nbLeds[status], HIGH);
 }
 
 void lightOffLeds(const int ledPins[], const int nbLeds) {
@@ -82,21 +82,21 @@ void lighton(int color) {
     stopBlinking();
     currentStatus = SUCCESS;
     alllightoff();
-    lightOnLeds(pins[SUCCESS], nbLeds[SUCCESS]);
+    lightOnLeds(SUCCESS);
     break;
   case 'Y':
   case 'U':
     stopBlinking();
     currentStatus = UNSTABLE;
     alllightoff();
-    lightOnLeds(pins[UNSTABLE], nbLeds[UNSTABLE]);
+    lightOnLeds(UNSTABLE);
     break;
   case 'R':
   case 'F':
     stopBlinking();
     currentStatus = FAILED;
     alllightoff();
-    lightOnLeds(pins[FAILED], nbLeds[FAILED]);
+    lightOnLeds(FAILED);
     break;
   case 'C' :
     startBlinking();
@@ -118,7 +118,7 @@ void blink(const int status) {
    } else {
      alllightoff();
      delay(BLINKING_TIME*2);
-     lightOnLeds(pins[status], nbLeds[status]);
+     lightOnLeds(status);
      delay(BLINKING_TIME*2);
    }
 }
