@@ -1,40 +1,45 @@
-const int successLedPins[] = {2, 3, 4};
-const int nbSuccessLeds = 3;
-const int unstableLedPins[] = {5, 6};
-const int nbUnstableLeds = 2;
-const int failedLedPins[] = {7, 8, 9};
-const int nbFailedLeds = 3;
+const int SUCCESS = 0;
+const int UNSTABLE = 1;
+const int FAILED = 2;
+const int ALL = 4;
+
+const int pins[3][3] = {{2, 3, 4},
+                    {5, 6, 0},
+                    {7, 8, 9}};
+const int nbLeds[3] = {3, 2, 3};
 
 const int BLINKING_TIME = 175;
 
-const int nbAllLeds = nbSuccessLeds + nbUnstableLeds + nbFailedLeds;
+const int nbAllLeds = 9;
 int allLedPins[nbAllLeds];
 
 boolean blinking = false;
 int lastblinkingcolor = 2;
 int direction = 1;
 
+int currentStatus;
+
 void initLedPins() {
 
-  for(int i = 0; i < nbSuccessLeds; i++) {
-    allLedPins[i] = successLedPins[i];
+  for(int i = 0; i < nbLeds[SUCCESS]; i++) {
+    allLedPins[i] = pins[SUCCESS][i];
   }
-  for(int i = 0; i < nbUnstableLeds; i++) {
-    allLedPins[i + nbSuccessLeds] = unstableLedPins[i];
+  for(int i = 0; i < nbLeds[UNSTABLE]; i++) {
+    allLedPins[i + nbLeds[SUCCESS]] = pins[UNSTABLE][i];
   }
-  for(int i = 0; i < nbFailedLeds; i++) {
-    allLedPins[i + nbSuccessLeds + nbUnstableLeds] = failedLedPins[i];
+  for(int i = 0; i < nbLeds[FAILED]; i++) {
+    allLedPins[i + nbLeds[SUCCESS] + nbLeds[UNSTABLE]] = pins[FAILED][i];
   }
 
   for (int i=0; i < nbAllLeds; i++) {
     pinMode(allLedPins[i], OUTPUT);
-  }  
+  }
 }
 
 void setup() {
   Serial.begin(9600); 
   initLedPins();
-  blinking = false;
+  stopBlinking();
 }
 
 void alllightoff() {
@@ -61,31 +66,61 @@ void lightOffLeds(const int ledPins[], const int nbLeds) {
   operateLeds(ledPins, nbLeds, LOW);
 }
 
+void startBlinking() {
+  blinking = true;
+}
+
+void stopBlinking() {
+  blinking = false;
+}
+
 void lighton(int color) {
   switch (color) {
 
   case 'G':
   case 'S':
+    stopBlinking();
+    currentStatus = SUCCESS;
     alllightoff();
-    lightOnLeds(successLedPins, nbSuccessLeds);
+    lightOnLeds(pins[SUCCESS], nbLeds[SUCCESS]);
     break;
   case 'Y':
-  case 'U':    
+  case 'U':
+    stopBlinking();
+    currentStatus = UNSTABLE;
     alllightoff();
-    lightOnLeds(unstableLedPins, nbUnstableLeds);
+    lightOnLeds(pins[UNSTABLE], nbLeds[UNSTABLE]);
     break;
   case 'R':
-  case 'F':    
+  case 'F':
+    stopBlinking();
+    currentStatus = FAILED;
     alllightoff();
-    lightOnLeds(failedLedPins, nbFailedLeds);
+    lightOnLeds(pins[FAILED], nbLeds[FAILED]);
+    break;
+  case 'C' :
+    startBlinking();
+    blink(currentStatus);
     break;
   case 'B' :
-    blinking = true;
-    blink_all();
+    startBlinking();
+    currentStatus = ALL;
+    blink(ALL);
     break;
   default:
     alllightoff();
   }
+}
+
+void blink(const int status) {
+   if (status == ALL) {
+     blink_all();
+   } else {
+     alllightoff();
+     delay(BLINKING_TIME*2);
+     lightOnLeds(pins[status], nbLeds[status]);
+     delay(BLINKING_TIME*2);
+   }
 }
 
 void blink_all() {
@@ -117,7 +152,7 @@ void loop() {
   } 
   else {
     if (blinking) {
-      blink_all();
+      blink(currentStatus);
     }
   }
 }
